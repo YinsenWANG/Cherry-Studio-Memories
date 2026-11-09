@@ -52,6 +52,7 @@ node scripts/memories-eidos/smoke.mjs
 ## 已知限制
 
 - 页面是纯文本 Markdown 编辑，尚无富文本、嵌套页面树、页面删除、附件或跨页面搜索；页面的并发保存没有冲突检测。
+- 空间外壳目前是固定中文的独立网页，尚未接入 Cherry 的国际化和 UI 组件；表格界面来自 Eidos。
 - 搜索是字面子串匹配，不是语义搜索；最多扫描 10,000 行。Eidos 不向该宿主提供实时变更事件，其他客户端写入后表格可能需要刷新。
 - Skills 页面只是索引，不是 Notion 的启用列表或技能包管理；没有定时采集、后台同步或跨设备同步。
 - 本版只随仓库提供 macOS arm64 Eidos 二进制。没有完成其他平台、数据迁移、备份恢复、崩溃恢复、长期并发或完整第三方许可证清单验证；sidecar 异常退出后不会自动重启。备份前先退出应用，并同时保存 `SharedMemories` 目录里的数据库和页面。
@@ -73,7 +74,7 @@ Eidos CLI 来自 [mayneyao/eidos 的 3.3.2 发布版](https://github.com/mayneya
 | `docs/dev/references/ai/agent-prompt-layers.md` | +2 / -0 |
 | `docs/eidos-demo.txt` | +5 / -0 |
 | `docs/eidos-electron.png` | 二进制 112,815 B |
-| `docs/eidos-version.md` | +95 / -0 |
+| `docs/eidos-version.md` | +96 / -0 |
 | `electron-builder.yml` | +4 / -6 |
 | `resources/eidos/AGPL-3.0.txt` | +661 / -0 |
 | `resources/eidos/attribution.txt` | +6 / -0 |
