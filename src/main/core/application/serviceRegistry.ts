@@ -82,6 +82,7 @@ import { SelectionAgentWindowService } from '@main/services/selection/SelectionA
 import { SelectionService } from '@main/services/selection/SelectionService'
 import { SentryLogService } from '@main/services/SentryLogService'
 import { ShortcutService } from '@main/services/ShortcutService'
+import { SpaceService } from '@main/services/SpaceService'
 import { StorageMonitorService } from '@main/services/StorageMonitorService'
 import { SubWindowService } from '@main/services/SubWindowService'
 import { ThemeService } from '@main/services/ThemeService'
@@ -153,6 +154,7 @@ export const services = {
   SelectionService,
   SelectionAgentWindowService,
   ShortcutService,
+  SpaceService,
   ThemeService,
   TraceStorageService,
   NodeTraceService,

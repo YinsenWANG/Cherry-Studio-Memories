@@ -102,6 +102,18 @@ export function buildPathRegistry() {
       : path.join(__dirname, '../../migrations/sqlite-drizzle'),
 
     // -- D. feature.* — grouped by feature, physical location is irrelevant --
+    'feature.space.data': path.join(appUserDataData, 'Space'),
+    'feature.space.workspace': path.join(appUserDataData, 'Space', 'workspace'),
+    'feature.space.workspace_conf_file': path.join(appUserDataData, 'Space', 'workspace', 'conf', 'conf.json'),
+    'feature.space.launcher_file': app.isPackaged
+      ? path.join(appExtraResources, 'memories', 'scripts', 'memories', 'start.mjs')
+      : path.join(app.getAppPath(), 'scripts', 'memories', 'start.mjs'),
+    'feature.space.locales': app.isPackaged
+      ? path.join(appExtraResources, 'memories', 'locales')
+      : path.join(app.getAppPath(), 'src', 'main', 'i18n', 'locales'),
+    'feature.space.i18next_file': app.isPackaged
+      ? path.join(appExtraResources, 'memories', 'i18next.cjs')
+      : path.join(app.getAppPath(), 'node_modules', 'i18next', 'dist', 'cjs', 'i18next.js'),
     'feature.external_app.native_file': path.join(
       appRootResources,
       'binaries',
@@ -461,6 +473,10 @@ const NO_ENSURE = [
   'app.database.migrations',
   'feature.provider_registry.data',
   'feature.computer_use.runtime',
+  'feature.space.launcher_file',
+  'feature.space.workspace_conf_file',
+  'feature.space.locales',
+  'feature.space.i18next_file',
   'feature.pdfjs.cmaps',
   'feature.pdfjs.standard_fonts',
   'feature.webview.preload_file',

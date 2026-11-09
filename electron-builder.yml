@@ -97,6 +97,16 @@ asarUnpack:
   - "node_modules/node-screenshots-*/**" # native N-API binary must be unpacked for runtime loading
   - "node_modules/node-mac-permissions/**" # native N-API binary must be unpacked for runtime loading
 extraResources:
+  - from: "scripts/memories"
+    to: "memories/scripts/memories"
+    filter: ["start.mjs", "server.mjs", "bootstrap.mjs"]
+  - from: "docs"
+    to: "memories/docs"
+    filter: ["setup.md", "memories-agent-guide.md"]
+  - from: "src/main/i18n/locales"
+    to: "memories/locales"
+  - from: "node_modules/i18next/dist/cjs/i18next.js"
+    to: "memories/i18next.cjs"
   - from: "src/main/ai/voice/localAdapters/NOTICE.txt"
     to: "voice-audio/NOTICE.txt"
   - from: "migrations/sqlite-drizzle"

@@ -53,6 +53,7 @@ import { Route as SettingsSearchRouteImport } from './routes/settings/search'
 import { Route as SettingsSelectionAssistantRouteImport } from './routes/settings/selection-assistant'
 import { Route as SettingsShortcutRouteImport } from './routes/settings/shortcut'
 import { Route as SettingsSkillsRouteImport } from './routes/settings/skills'
+import { Route as SettingsSpaceRouteImport } from './routes/settings/space'
 import { Route as SettingsSubscriptionRouteImport } from './routes/settings/subscription'
 import { Route as SettingsSystemRouteImport } from './routes/settings/system'
 import { Route as SettingsUsageRouteImport } from './routes/settings/usage'
@@ -297,6 +298,11 @@ const SettingsSkillsRoute = SettingsSkillsRouteImport.update({
   path: '/skills',
   getParentRoute: () => SettingsRoute,
 } as any)
+const SettingsSpaceRoute = SettingsSpaceRouteImport.update({
+  id: '/space',
+  path: '/space',
+  getParentRoute: () => SettingsRoute,
+} as any)
 const SettingsSubscriptionRoute = SettingsSubscriptionRouteImport.update({
   id: '/subscription',
   path: '/subscription',
@@ -450,6 +456,7 @@ export interface FileRoutesByFullPath {
   '/settings/selection-assistant': typeof SettingsSelectionAssistantRoute
   '/settings/shortcut': typeof SettingsShortcutRoute
   '/settings/skills': typeof SettingsSkillsRouteWithChildren
+  '/settings/space': typeof SettingsSpaceRoute
   '/settings/subscription': typeof SettingsSubscriptionRoute
   '/settings/system': typeof SettingsSystemRoute
   '/settings/usage': typeof SettingsUsageRoute
@@ -513,6 +520,7 @@ export interface FileRoutesByTo {
   '/settings/search': typeof SettingsSearchRoute
   '/settings/selection-assistant': typeof SettingsSelectionAssistantRoute
   '/settings/shortcut': typeof SettingsShortcutRoute
+  '/settings/space': typeof SettingsSpaceRoute
   '/settings/subscription': typeof SettingsSubscriptionRoute
   '/settings/system': typeof SettingsSystemRoute
   '/settings/usage': typeof SettingsUsageRoute
@@ -581,6 +589,7 @@ export interface FileRoutesById {
   '/settings/selection-assistant': typeof SettingsSelectionAssistantRoute
   '/settings/shortcut': typeof SettingsShortcutRoute
   '/settings/skills': typeof SettingsSkillsRouteWithChildren
+  '/settings/space': typeof SettingsSpaceRoute
   '/settings/subscription': typeof SettingsSubscriptionRoute
   '/settings/system': typeof SettingsSystemRoute
   '/settings/usage': typeof SettingsUsageRoute
@@ -650,6 +659,7 @@ export interface FileRouteTypes {
     | '/settings/selection-assistant'
     | '/settings/shortcut'
     | '/settings/skills'
+    | '/settings/space'
     | '/settings/subscription'
     | '/settings/system'
     | '/settings/usage'
@@ -713,6 +723,7 @@ export interface FileRouteTypes {
     | '/settings/search'
     | '/settings/selection-assistant'
     | '/settings/shortcut'
+    | '/settings/space'
     | '/settings/subscription'
     | '/settings/system'
     | '/settings/usage'
@@ -780,6 +791,7 @@ export interface FileRouteTypes {
     | '/settings/selection-assistant'
     | '/settings/shortcut'
     | '/settings/skills'
+    | '/settings/space'
     | '/settings/subscription'
     | '/settings/system'
     | '/settings/usage'
@@ -1119,6 +1131,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsSkillsRouteImport
       parentRoute: typeof SettingsRoute
     }
+    '/settings/space': {
+      id: '/settings/space'
+      path: '/space'
+      fullPath: '/settings/space'
+      preLoaderRoute: typeof SettingsSpaceRouteImport
+      parentRoute: typeof SettingsRoute
+    }
     '/settings/subscription': {
       id: '/settings/subscription'
       path: '/subscription'
@@ -1396,6 +1415,7 @@ interface SettingsRouteChildren {
   SettingsSelectionAssistantRoute: typeof SettingsSelectionAssistantRoute
   SettingsShortcutRoute: typeof SettingsShortcutRoute
   SettingsSkillsRoute: typeof SettingsSkillsRouteWithChildren
+  SettingsSpaceRoute: typeof SettingsSpaceRoute
   SettingsSubscriptionRoute: typeof SettingsSubscriptionRoute
   SettingsSystemRoute: typeof SettingsSystemRoute
   SettingsUsageRoute: typeof SettingsUsageRoute
@@ -1433,6 +1453,7 @@ const SettingsRouteChildren: SettingsRouteChildren = {
   SettingsSelectionAssistantRoute: SettingsSelectionAssistantRoute,
   SettingsShortcutRoute: SettingsShortcutRoute,
   SettingsSkillsRoute: SettingsSkillsRouteWithChildren,
+  SettingsSpaceRoute: SettingsSpaceRoute,
   SettingsSubscriptionRoute: SettingsSubscriptionRoute,
   SettingsSystemRoute: SettingsSystemRoute,
   SettingsUsageRoute: SettingsUsageRoute,

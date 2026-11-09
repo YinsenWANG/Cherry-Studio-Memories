@@ -1,31 +1,33 @@
 # Cherry-Studio-Memories
 
-An experimental public fork of Cherry Studio that connects agents to a shared, user-editable SiYuan workspace. SiYuan is an external sidecar: its binary is not included in the Electron installer. This prototype adds a Memories mini app, an MCP catalog preset, an idempotent workspace initializer, and a local setup page.
+An experimental public fork of Cherry Studio with a shared, user-editable **Space**. A Space is one SiYuan workspace containing a Memories database, an Agent Operating Guide, and a Skills index. The community default is a local workspace; a signed-in personal or enterprise user can configure the same separately hosted SiYuan endpoint on several devices. This fork does **not** provision cloud hosting or automatically connect a Cherry account to a space.
 
 ```text
-Cherry / other local agents ── MCP ──> SiYuan kernel ──> Memories + Guide + Skills
-Cherry Memories mini app ──> local setup page ──> SiYuan web editor
+Cherry Assistant ─┐
+Other agents ────┼── MCP ──► SiYuan workspace ──► Memories + Guide + Skills + pages
+Space mini app ──┘               ▲
+                         local kernel or remote service
 ```
 
-## Run the prototype
+The SiYuan kernel is a separately installed process and is not bundled in the Electron installer. The local kernel listens on loopback and stores its workspace in Cherry's data directory. With a kernel installed, a fresh Cherry profile seeds and binds the shared-memory MCP server to Cherry Assistant, launches the kernel, initializes the workspace, and supplies its API token automatically. If SiYuan is missing, open **Space** from the launchpad for the download link and installation guidance. A model/provider still needs to be configured before any agent can converse.
 
-1. Install [SiYuan 3.8.9](https://github.com/siyuan-note/siyuan/releases/tag/v3.8.9); on macOS place `SiYuan.app` in `/Applications`, or set `SIYUAN_KERNEL` to its kernel executable. Other platforms must provide a kernel **and its matching GUI resources**.
-2. Use Node >=24.12 and the pnpm version specified by this repository. From the repository root run `pnpm install` and `pnpm build`. To launch the built Cherry app in another terminal, run `pnpm rebuild:electron && pnpm exec electron-vite preview`.
-3. Run `node scripts/memories/start.mjs`. It detects an installed kernel, creates a separate workspace under `~/.cherry-studio-memories`, starts it on `127.0.0.1:16807`, and serves the setup page on `127.0.0.1:16808`. If detection fails it links to the upstream download. The process runs until interrupted. The local web editor asks for the access code in `~/.cherry-studio-memories/access-code`. Do not expose either port to the public internet.
-4. Open the **Memories** mini app in Cherry (or visit `http://127.0.0.1:16808/`). Click **初始化共享记忆**, then **打开文档**. The button creates the notebook, database and guide; it preserves existing documents on repeat runs.
-5. In Cherry's MCP catalog add **@cherry/shared-memories**, configure header `Authorization: Bearer <SiYuan API token>` using the token shown in SiYuan settings, and enable it. In each agent's editor bind that MCP server. This step is currently manual; an installed preset does not auto-bind agents. Apply [custom instructions](docs/custom-instructions.md) so agents know when and how to use it.
+## Get started
 
-If SiYuan is already running with a separate workspace, use `SIYUAN_WORKSPACE=/path/to/workspace node scripts/memories/server.mjs` instead of the launcher. The local server reads the API token from that workspace's configuration; `SIYUAN_TOKEN` and `SIYUAN_URL` can be set explicitly. The server is local-only and the initializer requires a same-origin POST. Avoid passing secrets in shell history.
+1. Install [SiYuan](https://github.com/siyuan-note/siyuan/releases); on macOS place `SiYuan.app` in `/Applications`. The kernel and its matching web resources remain outside Cherry. Restart Cherry after installing it.
+2. Open **Space** from the launchpad to see its connection state and setup prompt. The local SiYuan editor may ask for the access code stored in `Data/Space/access-code` under Cherry's data directory. Initialization is automatic and can also be retried from the page.
+3. To use a self-hosted or hosted workspace, open **Settings → Space**, select remote, enter its service URL and API token, save, test the connection, then restart Cherry to switch the Space editor and sidecar. Other devices share that backend only when they are configured to point to it; synchronization and access control are the backend operator's responsibility.
 
-## Connect other agents
+Private chats and personal memory are not automatically copied into Space. Content explicitly written to Space is visible to agents and people with backend access. SiYuan's MCP token grants administrator access across the connected workspace; it does not provide ChatGPT-style page permissions.
 
-The local setup page has a copy button for `使用这个指南帮我设置 Cherry-Studio-Memories 作为我的上下文系统：http://127.0.0.1:16808/setup`. This URL is accessible only from the same machine. A remote agent needs a separately secured HTTPS deployment and a URL reachable from its own environment; the public [setup guide](docs/setup.md) is also available. Configure the same workspace's MCP URL and authorization header in the other client, then add [custom instructions](docs/custom-instructions.md). Never paste API tokens into chat or memories.
+Other agents can use the same MCP endpoint and this prompt: `使用这个指南帮我设置 Cherry-Studio-Memories 作为我的上下文系统：https://raw.githubusercontent.com/YinsenWANG/Cherry-Studio-Memories/main/docs/setup.md`. The local Space page also provides a copyable `http://127.0.0.1:16808/setup` link for agents on the same machine. Never paste tokens into chats or memories.
 
-## Current limits
+## Verification and limits
 
-This is not yet an out-of-box shared brain: the sidecar and Node runtime are external, the user manually installs/configures the MCP preset and binds each agent, and agent adherence to the guide is not enforced. SiYuan MCP has administrator access across its workspace. A document index is not Notion's enabled-skills mechanism; search is not equivalent to Notion's semantic memory search. Deleting a row does not prove deletion from backups, history, other clients, or model provider logs. The [verification report](docs/verification.md) distinguishes actual tests from missing ones.
+[Phase 1 verification](docs/verification.md) and [phase 2 verification](docs/verification-phase2.md) include commands and raw outputs. Real Codex model sessions recalled, updated and deleted a test memory, but the first successful writer left Type and Source Agent empty and made an unintended extra row. A subsequent fresh writer using the revised guide did fill the requested fields, but one retry does not prove that all models will comply. Deletion from SiYuan history, backups or other copies is not verified. The remote endpoint test used two local processes; multi-device synchronization, enterprise permissions and offline operation have not been independently verified. Space uses Cherry’s locale at startup; changing the language requires restarting Cherry. Its copyable setup prompt is in Chinese.
 
-Research and engineering details: [Notion mechanism](docs/notion-mechanism.md), [backend selection](docs/backend-selection.md), [architecture](docs/architecture.md). Original upstream README follows.
+Commits are GPG-signed and verify locally. GitHub has reported `verified: false` with reason `no_user` for prior commits because the signing email is not associated with a verified GitHub account; no account settings were changed.
+
+Details: [architecture](docs/architecture.md), [ChatGPT Space comparison](docs/chatgpt-space.md), [backend selection](docs/backend-selection.md), [Notion mechanism](docs/notion-mechanism.md).
 
 ---
 

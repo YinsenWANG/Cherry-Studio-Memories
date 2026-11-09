@@ -1,9 +1,14 @@
 #!/usr/bin/env node
 import { readFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
+import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { Client } from '@modelcontextprotocol/sdk/client/index.js'
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
+const require = createRequire(
+  process.env.MEMORIES_MODULE_ROOT ? join(process.env.MEMORIES_MODULE_ROOT, 'package.json') : import.meta.url
+)
+const { Client } = require('@modelcontextprotocol/sdk/client/index.js')
+const { StreamableHTTPClientTransport } = require('@modelcontextprotocol/sdk/client/streamableHttp.js')
 
 const base = new URL(process.env.SIYUAN_URL || 'http://127.0.0.1:16807')
 const token = process.env.SIYUAN_TOKEN
@@ -134,12 +139,14 @@ try {
         : field.name === 'Status'
           ? ['active', 'superseded', 'forgotten']
           : null
-    if (values)
+    const options = key.options || []
+    const missing = values?.filter((name) => !options.some((option) => option.name === name)) || []
+    if (missing.length)
       await call('database', {
         action: 'key_update',
         id: database,
         keyID: key.id,
-        config: { options: values.map((name) => ({ name })) }
+        config: { options: [...options, ...missing.map((name) => ({ name }))] }
       })
   }
   process.stdout.write(

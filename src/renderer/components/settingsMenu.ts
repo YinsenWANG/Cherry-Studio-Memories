@@ -3,6 +3,7 @@ import {
   Archive,
   AudioLines,
   Bell,
+  Boxes,
   Cloud,
   Command,
   Crop,
@@ -70,6 +71,12 @@ export const settingsMenu: readonly SettingsMenuEntry[] = [
     icon: createElement(FileBox)
   },
   { route: '/settings/api-gateway', titleKey: 'apiGateway.title', icon: createElement(GatewayIcon) },
+  {
+    route: '/settings/space',
+    titleKey: 'settings.space.title',
+    icon: createElement(Boxes),
+    groupKey: 'settings.menuGroups.capabilities'
+  },
   {
     route: '/settings/mcp',
     titleKey: 'agent.settings.toolsMcp.mcp.tab',

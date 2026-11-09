@@ -20,6 +20,7 @@ import { PresetProviderSeeder } from './seeders/presetProviderSeeder'
 import { RetiredAgentRuntimeSeeder } from './seeders/RetiredAgentRuntimeSeeder'
 import { ScheduledTasksShortcutSeeder } from './seeders/scheduledTasksShortcutSeeder'
 import { SelectionActionItemsUpgradeSeeder } from './seeders/selectionActionItemsUpgradeSeeder'
+import { SharedMemoriesSeeder } from './seeders/sharedMemoriesSeeder'
 import { SidebarShortcutMigrationSeeder } from './seeders/sidebarShortcutMigrationSeeder'
 import { TranslateLanguageSeeder } from './seeders/translateLanguageSeeder'
 import { WebSearchPreferenceUpgradeSeeder } from './seeders/WebSearchPreferenceUpgradeSeeder'
@@ -57,5 +58,6 @@ export const seeders: ISeeder[] = [
   new TranslateLanguageSeeder(),
   new LocalModelSeeder(),
   new MiniAppSeeder(),
-  new BuiltinMcpServerSeeder()
+  new BuiltinMcpServerSeeder(),
+  new SharedMemoriesSeeder()
 ]

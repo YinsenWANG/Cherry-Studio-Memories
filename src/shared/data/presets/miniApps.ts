@@ -21,7 +21,8 @@ export interface MiniAppPreset {
 export const PRESETS_MINI_APPS: MiniAppPreset[] = [
   {
     id: 'cherry-studio-memories',
-    name: 'Memories',
+    name: 'Space',
+    nameKey: 'settings.space.title',
     url: 'http://127.0.0.1:16808/',
     bordered: true,
     supportedRegions: ['CN', 'Global']
