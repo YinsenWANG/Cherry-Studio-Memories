@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process'
+import { randomBytes } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { createServer } from 'node:http'
 import { createRequire } from 'node:module'
@@ -55,14 +56,24 @@ const messages = Object.fromEntries(
 )
 const clientMessages = JSON.stringify(messages).replaceAll('<', '\\u003c')
 const prompt = '使用这个指南帮我设置 Cherry-Studio-Memories 作为我的上下文系统：http://127.0.0.1:16808/setup'
-const page = `<!doctype html><html lang="${escapeHtml(language)}"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${tr('title')}</title><style>body{font:16px system-ui,sans-serif;line-height:1.6;max-width:760px;margin:3rem auto;padding:0 1.3rem;color-scheme:light dark;background:Canvas;color:CanvasText}button,a.button{display:inline-block;background:#a62749;color:white;border:0;border-radius:7px;padding:.7rem 1rem;margin:.3rem .4rem .3rem 0;text-decoration:none;cursor:pointer;font-size:1rem}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:color-mix(in srgb, CanvasText 8%, Canvas);padding:1rem;border-radius:8px}small{color:GrayText}</style><h1>${tr('title')}</h1><p>${tr('intro')}</p><p id="status">${tr('checking')}</p><button id="init">${tr('initialize')}</button><a class="button" href="${escapeHtml(editorUrl.href)}" target="_blank" rel="noopener">${tr('open')}</a><p>${tr('prompt')}</p><pre id="prompt">${escapeHtml(prompt)}</pre><button id="copy">${tr('copy')}</button><p><a href="/setup">${tr('setup')}</a> · <a href="https://github.com/siyuan-note/siyuan/releases">${tr('download')}</a></p><small>${tr('tip')}</small><script>
-const status=document.getElementById('status');const m=${clientMessages};
+const page = (
+  nonce
+) => `<!doctype html><html lang="${escapeHtml(language)}"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${tr('title')}</title><style>body{font:16px system-ui,sans-serif;line-height:1.6;max-width:760px;margin:3rem auto;padding:0 1.3rem;color-scheme:light dark;background:Canvas;color:CanvasText}button,a.button{display:inline-block;background:#a62749;color:white;border:0;border-radius:7px;padding:.7rem 1rem;margin:.3rem .4rem .3rem 0;text-decoration:none;cursor:pointer;font-size:1rem}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:color-mix(in srgb, CanvasText 8%, Canvas);padding:1rem;border-radius:8px}small{color:GrayText}</style><h1>${tr('title')}</h1><p>${tr('intro')}</p><p id="status">${tr('checking')}</p><button id="init">${tr('initialize')}</button><a class="button" href="${escapeHtml(editorUrl.href)}" target="_blank" rel="noopener">${tr('open')}</a><p>${tr('prompt')}</p><pre id="prompt">${escapeHtml(prompt)}</pre><button id="copy">${tr('copy')}</button><p><a href="/setup">${tr('setup')}</a> · <a href="https://github.com/siyuan-note/siyuan/releases">${tr('download')}</a></p><small>${tr('tip')}</small><script>
+const status=document.getElementById('status');const m=${clientMessages};let initToken='${nonce}';
 async function check(){try{const r=await fetch('/status');const x=await r.json();const reasons={missing_kernel:m.missing,port_in_use:m.port,initialization_failed:m.failed,startup_failed:m.failed};status.textContent=x.reason?reasons[x.reason]:x.ready?m.connected:m.failed}catch{status.textContent=m.failed}}
-document.getElementById('init').onclick=async()=>{status.textContent=m.initializing;try{const r=await fetch('/init',{method:'POST'});status.textContent=r.ok?m.initialized:m.failed}catch{status.textContent=m.failed}};
+document.getElementById('init').onclick=async()=>{status.textContent=m.initializing;try{const r=await fetch('/init',{method:'POST',headers:{'X-Memories-Init':initToken}});const result=await r.json();initToken=result.initToken||'';status.textContent=r.ok?m.initialized:m.failed}catch{status.textContent=m.failed}};
 document.getElementById('copy').onclick=async()=>{const text=document.getElementById('prompt').textContent;const input=document.createElement('textarea');input.value=text;input.style.position='fixed';input.style.left='-10000px';document.body.appendChild(input);input.focus();input.select();const copied=document.execCommand('copy');input.remove();try{if(!copied)await navigator.clipboard.writeText(text);status.textContent=m.copied}catch{status.textContent=m.failed}};check();
 </script></html>`
 let initializing = false
+const initTokens = new Set()
+function issueToken() {
+  if (initTokens.size >= 128) initTokens.delete(initTokens.values().next().value)
+  const nonce = randomBytes(32).toString('hex')
+  initTokens.add(nonce)
+  return nonce
+}
 const server = createServer(async (req, res) => {
+  res.setHeader('X-Frame-Options', 'DENY')
   const host = req.headers.host
   if (host !== `127.0.0.1:${port}` && host !== `localhost:${port}`) {
     res.writeHead(403).end()
@@ -73,7 +84,7 @@ const server = createServer(async (req, res) => {
     res.end(body)
   }
   const json = (status, body) => send(status, 'application/json; charset=utf-8', JSON.stringify(body))
-  if (req.method === 'GET' && req.url === '/') return send(200, 'text/html; charset=utf-8', page)
+  if (req.method === 'GET' && req.url === '/') return send(200, 'text/html; charset=utf-8', page(issueToken()))
   if (req.method === 'GET' && req.url === '/setup') {
     const guide = await readFile(join(dir, '../../docs/setup.md'), 'utf8')
     return send(
@@ -100,8 +111,10 @@ const server = createServer(async (req, res) => {
   }
   if (req.method === 'POST' && req.url === '/init') {
     if (req.headers.origin !== `http://${host}`) return json(403, { error: 'Invalid origin' })
-    if (!token) return json(400, { error: 'Set SIYUAN_WORKSPACE or SIYUAN_TOKEN before starting Memories.' })
-    if (initializing) return json(409, { error: 'Initialization is already running.' })
+    if (!initTokens.delete(req.headers['x-memories-init'])) return json(403, { error: 'Invalid initialization token' })
+    const finish = (status, body) => json(status, { ...body, initToken: issueToken() })
+    if (!token) return finish(400, { error: 'Set SIYUAN_WORKSPACE or SIYUAN_TOKEN before starting Memories.' })
+    if (initializing) return finish(409, { error: 'Initialization is already running.' })
     initializing = true
     const child = spawn(process.execPath, [join(dir, 'bootstrap.mjs')], {
       env: { ...process.env, SIYUAN_URL: backend, SIYUAN_TOKEN: token },
@@ -110,7 +123,7 @@ const server = createServer(async (req, res) => {
     child.stderr.pipe(process.stderr)
     child.on('error', () => {
       initializing = false
-      json(500, { error: 'Could not start initialization.' })
+      finish(500, { error: 'Could not start initialization.' })
     })
     child.on('close', (code) => {
       initializing = false
@@ -119,7 +132,7 @@ const server = createServer(async (req, res) => {
         process.stdout.write('CHERRY_SPACE_READY\n')
       }
       if (!res.writableEnded)
-        json(
+        finish(
           code === 0 ? 200 : 500,
           code === 0 ? { ok: true } : { error: 'Initialization failed; check the backend and API token.' }
         )

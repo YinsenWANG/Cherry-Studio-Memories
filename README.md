@@ -13,7 +13,7 @@ The SiYuan kernel is a separately installed process and is not bundled in the El
 
 ## Get started
 
-1. Install [SiYuan](https://github.com/siyuan-note/siyuan/releases); on macOS place `SiYuan.app` in `/Applications`. The kernel and its matching web resources remain outside Cherry. Restart Cherry after installing it.
+1. Install [SiYuan](https://github.com/siyuan-note/siyuan/releases); on macOS place `SiYuan.app` in `/Applications`. Automatic verification currently recognizes SiYuan 3.8.9 for macOS arm64. For another verified installation, set `SIYUAN_KERNEL` to the kernel path when launching Cherry. The workspace's `networkServe` setting must be off. The kernel and its matching web resources remain outside Cherry. Restart Cherry after installing it.
 2. Open **Space** from the launchpad to see its connection state and setup prompt. The local SiYuan editor may ask for the access code stored in `Data/Space/access-code` under Cherry's data directory. Initialization is automatic and can also be retried from the page.
 3. To use a self-hosted or hosted workspace, open **Settings → Space**, select remote, enter its service URL and API token, save, test the connection, then restart Cherry to switch the Space editor and sidecar. Other devices share that backend only when they are configured to point to it; synchronization and access control are the backend operator's responsibility.
 

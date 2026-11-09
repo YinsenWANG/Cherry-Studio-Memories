@@ -4987,6 +4987,7 @@
   "settings.mcp.builtinServersDescriptions.python": "รันโค้ด Python ในสภาพแวดล้อม Sandbox ที่ปลอดภัย รัน Python ด้วย Pyodide รองรับไลบรารีมาตรฐานส่วนใหญ่และแพ็กเกจคำนวณทางวิทยาศาสตร์",
   "settings.mcp.builtinServersDescriptions.qveris": "เชื่อมต่อ QVeris เพื่อค้นหา ตรวจสอบ และเรียกใช้ความสามารถของ AI agent ต้องกำหนดค่าตัวแปรสภาพแวดล้อม QVERIS_API_KEY",
   "settings.mcp.builtinServersDescriptions.sequentialthinking": "MCP server ที่ให้เครื่องมือสำหรับการแก้ปัญหาแบบไดนามิกและสะท้อนกลับผ่านกระบวนการคิดที่มีโครงสร้าง",
+  "settings.mcp.builtinServersDescriptions.shared_memories": "เชื่อมต่อกับพื้นที่ทำงาน SiYuan บนเครื่องตามค่าเริ่มต้นและต้องมีสิทธิ์ผู้ดูแลพื้นที่ทำงาน โดยข้อมูลจะอยู่บนอุปกรณ์นี้ตามค่าเริ่มต้น",
   "settings.mcp.command": "คำสั่ง",
   "settings.mcp.copyLogs": "คัดลอก log",
   "settings.mcp.customRegistryPlaceholder": "ป้อน URL รีจิสทรีส่วนตัว เช่น https://npm.company.com",

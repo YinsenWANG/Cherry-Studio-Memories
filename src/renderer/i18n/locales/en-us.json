@@ -4987,6 +4987,7 @@
   "settings.mcp.builtinServersDescriptions.python": "Execute Python code in a secure sandbox environment. Run Python with Pyodide, supporting most standard libraries and scientific computing packages",
   "settings.mcp.builtinServersDescriptions.qveris": "Connect to QVeris to discover, inspect, and call AI-agent capabilities. Requires configuring the QVERIS_API_KEY environment variable.",
   "settings.mcp.builtinServersDescriptions.sequentialthinking": "A MCP server implementation that provides tools for dynamic and reflective problem solving through structured thinking processes",
+  "settings.mcp.builtinServersDescriptions.shared_memories": "Connects to the local SiYuan workspace by default and requires workspace administrator access. Data stays on this device by default.",
   "settings.mcp.command": "Command",
   "settings.mcp.copyLogs": "Copy logs",
   "settings.mcp.customRegistryPlaceholder": "Enter private registry URL, e.g.: https://npm.company.com",

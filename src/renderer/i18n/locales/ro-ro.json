@@ -4987,6 +4987,7 @@
   "settings.mcp.builtinServersDescriptions.python": "Execută cod Python într-un mediu sandbox securizat. Rulează Python cu Pyodide, suportând majoritatea bibliotecilor standard și pachetelor de calcul științific",
   "settings.mcp.builtinServersDescriptions.qveris": "Conectați-vă la QVeris pentru a descoperi, inspecta și apela capabilitățile agenților AI. Este necesară configurarea variabilei de mediu QVERIS_API_KEY.",
   "settings.mcp.builtinServersDescriptions.sequentialthinking": "O implementare de server MCP care oferă instrumente pentru rezolvarea dinamică și reflexivă a problemelor prin procese de gândire structurată",
+  "settings.mcp.builtinServersDescriptions.shared_memories": "Se conectează implicit la spațiul de lucru SiYuan local și necesită acces de administrator. Datele rămân implicit pe acest dispozitiv.",
   "settings.mcp.command": "Comandă",
   "settings.mcp.copyLogs": "Copiază jurnalele",
   "settings.mcp.customRegistryPlaceholder": "Introdu URL registru privat, de ex.: https://npm.company.com",

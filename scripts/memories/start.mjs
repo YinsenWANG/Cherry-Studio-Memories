@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process'
-import { randomBytes } from 'node:crypto'
-import { constants } from 'node:fs'
+import { createHash, randomBytes } from 'node:crypto'
+import { constants, createReadStream } from 'node:fs'
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
-import { homedir } from 'node:os'
+import { constants as osConstants, homedir } from 'node:os'
 import { delimiter, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -13,6 +13,22 @@ const dir = dirname(fileURLToPath(import.meta.url))
 const backend = process.env.SIYUAN_URL || 'http://127.0.0.1:16807'
 let kernel, web, initializer
 let stopping = false
+let failure
+
+function fail(reason, code = 1) {
+  if (failure) return
+  failure = { reason, code }
+  process.exitCode = code
+  process.stderr.write(`${reason}\n`)
+}
+
+function childFailure(name, status, signal) {
+  if (stopping || (status === 0 && !signal)) return
+  fail(
+    `${name} exited ${signal ? `on ${signal}` : `with code ${status}`}.`,
+    status || 128 + (osConstants.signals[signal] || 1)
+  )
+}
 
 function stop() {
   if (stopping) return
@@ -29,16 +45,15 @@ function startWeb(reason = '') {
     env: { ...process.env, SIYUAN_WORKSPACE: workspace, SIYUAN_URL: backend, SIYUAN_START_ERROR: reason },
     stdio: 'inherit'
   })
-  web.on('exit', (status) => {
+  web.on('exit', (status, signal) => {
     if (!stopping) {
+      childFailure('Space UI', status, signal)
       stop()
-      process.exitCode = status || 0
     }
   })
   web.on('error', (error) => {
-    process.stderr.write(`Space UI could not start: ${error.message}\n`)
+    fail(`Space UI could not start: ${error.message}`)
     stop()
-    process.exitCode = 1
   })
 }
 
@@ -48,25 +63,35 @@ async function initialize(token) {
     stdio: ['ignore', 'ignore', 'inherit']
   })
   return new Promise((resolve) => {
-    initializer.once('error', () => resolve(false))
-    initializer.once('exit', (code) => resolve(code === 0))
+    initializer.once('error', (error) => {
+      if (!stopping) fail(`Space initialization could not start: ${error.message}`)
+      resolve(false)
+    })
+    initializer.once('exit', (code, signal) => {
+      childFailure('Space initialization', code, signal)
+      resolve(code === 0)
+    })
   })
 }
 
 async function main() {
   if (backend !== 'http://127.0.0.1:16807') {
     const initialized = process.env.SIYUAN_TOKEN && (await initialize(process.env.SIYUAN_TOKEN))
+    if (!initialized && !stopping) fail('Space initialization failed.')
     startWeb(initialized ? '' : 'initialization_failed')
     if (initialized) process.stdout.write('CHERRY_SPACE_READY\n')
     return
   }
 
   const binaryName = process.platform === 'win32' ? 'SiYuan-Kernel.exe' : 'SiYuan-Kernel'
-  const candidates = [
-    process.env.SIYUAN_KERNEL,
-    process.platform === 'darwin' ? '/Applications/SiYuan.app/Contents/Resources/kernel/SiYuan-Kernel' : null,
-    ...(process.env.PATH || '').split(delimiter).flatMap((entry) => [join(entry, binaryName), join(entry, 'siyuan')])
-  ].filter(Boolean)
+  const candidates = process.env.SIYUAN_KERNEL
+    ? [process.env.SIYUAN_KERNEL]
+    : [
+        process.platform === 'darwin' ? '/Applications/SiYuan.app/Contents/Resources/kernel/SiYuan-Kernel' : null,
+        ...(process.env.PATH || '')
+          .split(delimiter)
+          .flatMap((entry) => [join(entry, binaryName), join(entry, 'siyuan')])
+      ].filter(Boolean)
   let binary
   for (const candidate of candidates) {
     try {
@@ -78,13 +103,40 @@ async function main() {
     }
   }
   if (!binary) {
-    process.stderr.write('SiYuan kernel not found. Install it from https://github.com/siyuan-note/siyuan/releases.\n')
-    startWeb('missing_kernel')
+    fail(
+      'SiYuan kernel not found or not executable. Install it from https://github.com/siyuan-note/siyuan/releases and set SIYUAN_KERNEL to its path.'
+    )
+    if (!process.env.SIYUAN_KERNEL) startWeb('missing_kernel')
     return
+  }
+
+  if (!process.env.SIYUAN_KERNEL) {
+    const expected =
+      process.platform === 'darwin' && process.arch === 'arm64'
+        ? 'a99c4483c90501d3289fd19831ae2a44c64731c5e1da1be925862b7541500fbd'
+        : ''
+    const hash = createHash('sha256')
+    for await (const chunk of createReadStream(binary)) hash.update(chunk)
+    if (!expected || hash.digest('hex') !== expected) {
+      fail(
+        `SiYuan kernel could not be verified: ${binary}. Set SIYUAN_KERNEL explicitly after verifying the installation.`
+      )
+      startWeb('missing_kernel')
+      return
+    }
+  }
+
+  try {
+    const config = JSON.parse(await readFile(join(workspace, 'conf', 'conf.json'), 'utf8'))
+    if (config.system?.networkServe)
+      throw new Error('SiYuan networkServe is enabled; disable network serving in the workspace before starting Space.')
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error
   }
 
   try {
     await fetch(`${backend}/api/system/version`, { method: 'POST', signal: AbortSignal.timeout(1500) })
+    fail('Port 16807 is already in use; stop the other service before starting Space.')
     startWeb('port_in_use')
     return
   } catch {
@@ -102,19 +154,17 @@ async function main() {
     code = randomBytes(24).toString('base64url')
     await writeFile(codeFile, code, { mode: 0o600, flag: 'wx' })
   }
-  kernel = spawn(
-    binary,
-    ['--home-dir', join(root, 'home'), '--workspace', workspace, 'serve', '--port', '16807', '--accessAuthCode', code],
-    { stdio: ['ignore', 'inherit', 'inherit'] }
-  )
-  kernel.on('exit', (status) => {
+  kernel = spawn(binary, ['--home-dir', join(root, 'home'), '--workspace', workspace, 'serve', '--port', '16807'], {
+    env: { ...process.env, SIYUAN_ACCESS_AUTH_CODE: code },
+    stdio: ['ignore', 'inherit', 'inherit']
+  })
+  kernel.on('exit', (status, signal) => {
+    childFailure('SiYuan', status, signal)
     stop()
-    process.exitCode = status || 0
   })
   kernel.on('error', (error) => {
-    process.stderr.write(`SiYuan could not start: ${error.message}\n`)
+    fail(`SiYuan could not start: ${error.message}`)
     stop()
-    process.exitCode = 1
   })
   let token
   for (let attempt = 0; attempt < 60 && !stopping; attempt++) {
@@ -136,7 +186,10 @@ async function main() {
     await new Promise((resolve) => setTimeout(resolve, 500))
   }
   if (!token || stopping) {
-    if (!stopping) startWeb('startup_failed')
+    if (!stopping) {
+      fail('SiYuan did not become ready.')
+      startWeb('startup_failed')
+    }
     return
   }
   const initialized = await initialize(token)
@@ -147,7 +200,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  process.stderr.write(`Space could not start: ${error.message}\n`)
+  fail(`Space could not start: ${error.message}`)
   stop()
-  process.exitCode = 1
 })
