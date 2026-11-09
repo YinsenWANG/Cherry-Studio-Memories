@@ -1,5 +1,7 @@
 # Agent Operating Guide
 
+> This is the earlier SiYuan guide, retained for reference. The current Space initializes an editable guide; connect using [setup](setup.md).
+
 Version: 0.1.0. Published: 2026-11-09.
 
 ## Workspace and destinations

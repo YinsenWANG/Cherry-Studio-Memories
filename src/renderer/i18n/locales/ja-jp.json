@@ -5975,6 +5975,7 @@
   "settings.space.remote": "リモート",
   "settings.space.restart": "保存後、Cherry Studio を再起動すると、エディターとローカルサービスにスペースが反映されます。接続テストには保存済みの設定を使用します。",
   "settings.space.saveError": "保存できませんでした。URL を確認して再試行してください。",
+  "settings.space.setupPrompt": "このガイドを使って、Cherry-Studio-Memories を私のコンテキストシステムとして設定してください：{{url}}",
   "settings.space.title": "スペース",
   "settings.subscription.activated": "{{plan}} が有効になりました",
   "settings.subscription.card_label": "サブスクリプション",

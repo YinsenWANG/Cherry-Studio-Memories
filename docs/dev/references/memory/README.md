@@ -1,5 +1,5 @@
 ---
-description: Entry point for the memory mechanisms — Agent File Memory, Knowledge Base, and MCP Memory — plus the status of the v1 Global Memory feature
+description: Entry point for memory mechanisms and shared Space, plus the status of the v1 Global Memory feature
 sources:
   - src/main/ai/agents/prompt.ts
   - src/main/ai/mcp/servers/agentMemory.ts
@@ -9,10 +9,10 @@ sources:
 
 # Memory Reference
 
-Cherry Studio provides three memory mechanisms that differ in who they serve,
+Cherry Studio provides memory mechanisms that differ in who they serve,
 how they persist, and where they are stored: file-based memory for Agents
 (`SOUL.md` / `USER.md` / `FACT.md` / `JOURNAL.jsonl`), the Knowledge Base, and
-the built-in `@cherry/memory` MCP server. The v1 "Global Memory" toggle was
+the built-in `@cherry/memory` MCP server, and shared Space. The v1 "Global Memory" toggle was
 removed in v2 ([#14250](https://github.com/CherryHQ/cherry-studio/issues/14250));
 see the overview for what to use instead.
 

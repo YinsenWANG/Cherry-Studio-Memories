@@ -5975,6 +5975,7 @@
   "settings.space.remote": "Απομακρυσμένη",
   "settings.space.restart": "Μετά την αποθήκευση, επανεκκινήστε το Cherry Studio για να εφαρμοστεί ο χώρος στον επεξεργαστή και την τοπική υπηρεσία. Η δοκιμή χρησιμοποιεί την αποθηκευμένη σύνδεση.",
   "settings.space.saveError": "Η αποθήκευση απέτυχε. Ελέγξτε τη διεύθυνση URL και δοκιμάστε ξανά.",
+  "settings.space.setupPrompt": "Χρησιμοποίησε αυτόν τον οδηγό για να ρυθμίσεις το Cherry-Studio-Memories ως σύστημα πλαισίου μου: {{url}}",
   "settings.space.title": "Χώρος",
   "settings.subscription.activated": "Το {{plan}} είναι ενεργό",
   "settings.subscription.card_label": "Συνδρομή",

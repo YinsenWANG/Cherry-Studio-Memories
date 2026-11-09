@@ -5975,6 +5975,7 @@
   "settings.space.remote": "Remote",
   "settings.space.restart": "Starten Sie Cherry Studio nach dem Speichern neu, um den Space im Editor und lokalen Dienst zu übernehmen. Der Test verwendet die gespeicherte Verbindung.",
   "settings.space.saveError": "Speichern fehlgeschlagen. Prüfen Sie die URL und versuchen Sie es erneut.",
+  "settings.space.setupPrompt": "Verwende diese Anleitung, um Cherry-Studio-Memories als mein Kontextsystem einzurichten: {{url}}",
   "settings.space.title": "Space",
   "settings.subscription.activated": "{{plan}} ist aktiv",
   "settings.subscription.card_label": "Abonnement",

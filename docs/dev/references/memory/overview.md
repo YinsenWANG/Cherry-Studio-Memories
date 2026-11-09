@@ -1,5 +1,5 @@
 ---
-description: Comparison of the three memory mechanisms in Cherry Studio — Agent File Memory, Knowledge Base, and MCP Memory — plus the status of the v1 Global Memory feature
+description: Comparison of Cherry Studio memory mechanisms and shared Space, plus the status of the v1 Global Memory feature
 sources:
   - src/main/ai/agents/prompt.ts
   - src/main/ai/mcp/servers/agentMemory.ts
@@ -9,7 +9,7 @@ sources:
 
 # Memory Feature Overview
 
-Cherry Studio provides three distinct memory mechanisms. They differ in who they serve, how they persist, and where they are stored. Use this reference to pick the right one for your use case and to understand why enabling one does not affect the others.
+Cherry Studio provides several memory mechanisms. They differ in who they serve, how they persist, and where they are stored. Use this reference to pick the right one for your use case and to understand why enabling one does not affect the others.
 
 ## Comparison
 
@@ -18,6 +18,7 @@ Cherry Studio provides three distinct memory mechanisms. They differ in who they
 | Agent File Memory | Agent | File read/write (`SOUL.md` / `USER.md` / `FACT.md` / `JOURNAL.jsonl`) | Agent data directory (`{agentData}/memory/`) | Yes | No (per-agent) |
 | Knowledge Base | Assistant + Agent | Indexed retrieval (ingestion + vector/query) | Knowledge base directory | Yes | Yes |
 | MCP Memory | Agent | MCP protocol (`@cherry/memory` built-in server) | MCP server (`memory.json` knowledge graph) | Yes | Depends on server impl |
+| Shared Space | Bound agents and Space UI | REST and MCP | Local or self-hosted Space server | Yes | Yes, within the same Space |
 
 ## About "Global Memory"
 
@@ -63,8 +64,15 @@ there is still no app-wide Global Memory setting.
 - The built-in `@cherry/memory` MCP server (`src/main/ai/mcp/servers/memory.ts`) exposes a `memory.json` knowledge-graph (entities / relations / observations).
 - Agents call it through MCP tools; persistence and sharing depend on the server implementation.
 
+### Shared Space
+
+- Space stores editable pages and structured memories in a local or self-hosted server.
+- Bound agents use the same memory through MCP. The server checks required fields, duplicates, and revisions on writes.
+- Space data is separate from Agent File Memory and the `@cherry/memory` knowledge graph.
+
 ## Choosing
 
 - Agent persona and long-running project knowledge for a single agent → **Agent File Memory**.
 - Searchable reference material you curate → **Knowledge Base**.
 - Structured entity/relation memory driven by MCP → **MCP Memory**.
+- Editable context shared by authorized agents → **Shared Space**.

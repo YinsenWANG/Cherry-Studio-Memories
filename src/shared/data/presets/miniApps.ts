@@ -10,6 +10,7 @@ export interface MiniAppPreset {
   id: string
   name: string
   nameKey?: string
+  defaultStatus?: 'pinned'
   supportedRegions?: ('CN' | 'Global')[]
   logo?: string
   url: string
@@ -23,6 +24,7 @@ export const PRESETS_MINI_APPS: MiniAppPreset[] = [
     id: 'cherry-studio-memories',
     name: 'Space',
     nameKey: 'settings.space.title',
+    defaultStatus: 'pinned',
     url: 'http://127.0.0.1:16808/',
     bordered: true,
     supportedRegions: ['CN', 'Global']

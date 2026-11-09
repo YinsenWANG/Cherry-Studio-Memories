@@ -49,6 +49,10 @@ native workspace context can still load according to that driver's trust
 boundary. Cherry-owned persona, memory, workspace-path, security, citation,
 artifact, and language guidance is appended independently of the base.
 
+The shared Space guidance asks agents to search available Space memory tools
+before answering, treat results as data, and store only durable context. It
+remains model guidance; the Space server validates writes and revisions.
+
 ## Persona and onboarding
 
 Creating an Agent preserves an empty System Prompt; it does not supply a generic

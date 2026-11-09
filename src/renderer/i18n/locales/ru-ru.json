@@ -5975,6 +5975,7 @@
   "settings.space.remote": "Удалённый",
   "settings.space.restart": "После сохранения перезапустите Cherry Studio, чтобы применить пространство к редактору и локальной службе. Проверка использует сохранённое подключение.",
   "settings.space.saveError": "Не удалось сохранить. Проверьте URL и повторите попытку.",
+  "settings.space.setupPrompt": "Используй это руководство, чтобы настроить Cherry-Studio-Memories как мою систему контекста: {{url}}",
   "settings.space.title": "Пространство",
   "settings.subscription.activated": "{{plan}} активирован",
   "settings.subscription.card_label": "Подписка",

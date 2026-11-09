@@ -53,6 +53,12 @@ describe('MiniAppSeeder', () => {
     }
   })
 
+  it('places Space on the launchpad for a new profile', () => {
+    new MiniAppSeeder().run(dbh.db)
+    const space = dbh.db.select().from(miniAppTable).where(eq(miniAppTable.appId, 'cherry-studio-memories')).get()
+    expect(space?.status).toBe('pinned')
+  })
+
   it('should refresh preset display fields on re-run', async () => {
     const preset = PRESETS_MINI_APPS.find(({ id }) => id === 'openai')!
     await dbh.db.insert(miniAppTable).values({

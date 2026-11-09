@@ -1,33 +1,32 @@
 # Cherry-Studio-Memories
 
-An experimental public fork of Cherry Studio with a shared, user-editable **Space**. A Space is one SiYuan workspace containing a Memories database, an Agent Operating Guide, and a Skills index. The community default is a local workspace; a signed-in personal or enterprise user can configure the same separately hosted SiYuan endpoint on several devices. This fork does **not** provision cloud hosting or automatically connect a Cherry account to a space.
+Cherry-Studio-Memories adds an editable **Space** to Cherry Studio. It combines pages, tables, a Memories table, an Agent Operating Guide and a Skills directory. The local version uses Cherry's bundled Electron runtime and npm dependencies; a separately hosted server uses the same API and Space interface.
 
 ```text
-Cherry Assistant ─┐
-Other agents ────┼── MCP ──► SiYuan workspace ──► Memories + Guide + Skills + pages
-Space mini app ──┘               ▲
-                         local kernel or remote service
+Cherry Space UI ── REST ──┐
+Cherry Assistant ─┐       ├──► local or remote Space service ──► pages + tables + Memories
+Other agents ────┴── MCP ┘
 ```
 
-The SiYuan kernel is a separately installed process and is not bundled in the Electron installer. The local kernel listens on loopback and stores its workspace in Cherry's data directory. With a kernel installed, a fresh Cherry profile seeds and binds the shared-memory MCP server to Cherry Assistant, launches the kernel, initializes the workspace, and supplies its API token automatically. If SiYuan is missing, open **Space** from the launchpad for the download link and installation guidance. A model/provider still needs to be configured before any agent can converse.
+On a fresh profile, Cherry starts the local service on a random loopback port, initializes Space and binds its MCP server to Cherry Assistant. No separately installed Node, npm or database is needed on the user's machine. Configure a model/provider before conversing with an agent.
 
 ## Get started
 
-1. Install [SiYuan](https://github.com/siyuan-note/siyuan/releases); on macOS place `SiYuan.app` in `/Applications`. The kernel and its matching web resources remain outside Cherry. Restart Cherry after installing it.
-2. Open **Space** from the launchpad to see its connection state and setup prompt. The local SiYuan editor may ask for the access code stored in `Data/Space/access-code` under Cherry's data directory. Initialization is automatic and can also be retried from the page.
-3. To use a self-hosted or hosted workspace, open **Settings → Space**, select remote, enter its service URL and API token, save, test the connection, then restart Cherry to switch the Space editor and sidecar. Other devices share that backend only when they are configured to point to it; synchronization and access control are the backend operator's responsibility.
+1. Open **Space** from the launchpad. Create and edit pages with Cherry's editor, and add, edit, filter and sort table rows. The Space page can copy an agent setup prompt.
+2. For a self-hosted service, follow [the deployment guide](docs/deploy-server.md), then open **Settings → Space**, select remote, enter its URL and sign in. Save and test the connection; restart Cherry after switching modes.
+3. To run the server from a checkout, use Node 24.16+ and the commands in the deployment guide. The server package is in [`packages/cherry-memories-server`](packages/cherry-memories-server/README.md).
 
-Private chats and personal memory are not automatically copied into Space. Content explicitly written to Space is visible to agents and people with backend access. SiYuan's MCP token grants administrator access across the connected workspace; it does not provide ChatGPT-style page permissions.
+Private chats and existing SiYuan data are not automatically copied into Space. Content written to a Space is visible to agents with that account's credential. There is no real-time collaboration or per-page permission system. Back up the complete Space data directory with the service stopped.
 
-Other agents can use the same MCP endpoint and this prompt: `使用这个指南帮我设置 Cherry-Studio-Memories 作为我的上下文系统：https://raw.githubusercontent.com/YinsenWANG/Cherry-Studio-Memories/main/docs/setup.md`. The local Space page also provides a copyable `http://127.0.0.1:16808/setup` link for agents on the same machine. Never paste tokens into chats or memories.
+Other agents use the Space page's copy button to obtain a prompt containing the current server's `/setup` URL. Never paste bearer tokens into chats or memories.
 
 ## Verification and limits
 
-[Phase 1 verification](docs/verification.md) and [phase 2 verification](docs/verification-phase2.md) include commands and raw outputs. Real Codex model sessions recalled, updated and deleted a test memory, but the first successful writer left Type and Source Agent empty and made an unintended extra row. A subsequent fresh writer using the revised guide did fill the requested fields, but one retry does not prove that all models will comply. Deletion from SiYuan history, backups or other copies is not verified. The remote endpoint test used two local processes; multi-device synchronization, enterprise permissions and offline operation have not been independently verified. Space uses Cherry’s locale at startup; changing the language requires restarting Cherry. Its copyable setup prompt is in Chinese.
+See [npm backend verification](docs/verification-npm-backend.md) for the executed checks and outstanding validation. The server rejects missing required memory fields, similar active titles and stale revisions. Forgetting clears current memory content but does not erase database history or backups.
 
-Commits are GPG-signed and verify locally. GitHub has reported `verified: false` with reason `no_user` for prior commits because the signing email is not associated with a verified GitHub account; no account settings were changed.
+The server uses Node's built-in SQLite, [Eidos File](https://www.npmjs.com/package/@eidos.space/eidos-file) (MIT), [MCP SDK](https://www.npmjs.com/package/@modelcontextprotocol/sdk) (MIT), [Better Auth](https://www.npmjs.com/package/better-auth) (MIT) and [Zod](https://www.npmjs.com/package/zod) (MIT). The Eidos CLI is not included. The [server README](packages/cherry-memories-server/README.md) lists the locked runtime dependencies and their declared licenses. Cherry Studio Community Edition remains AGPL-3.0.
 
-Details: [architecture](docs/architecture.md), [ChatGPT Space comparison](docs/chatgpt-space.md), [backend selection](docs/backend-selection.md), [Notion mechanism](docs/notion-mechanism.md).
+Details: [architecture](docs/architecture-npm-backend.md), [deployment](docs/deploy-server.md), [verification](docs/verification-npm-backend.md).
 
 ---
 

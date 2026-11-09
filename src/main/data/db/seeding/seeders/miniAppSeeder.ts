@@ -48,7 +48,7 @@ export class MiniAppSeeder implements ISeeder {
         background: preset.background ?? null,
         supportedRegions: preset.supportedRegions ?? null,
         nameKey: preset.nameKey ?? null,
-        status: 'enabled',
+        status: preset.defaultStatus ?? 'enabled',
         orderKey: insertOrderKeys.get(preset.id) ?? this.presetDefaultOrderKeys.get(preset.id) ?? ''
       }
 

@@ -5975,6 +5975,7 @@
   "settings.space.remote": "Từ xa",
   "settings.space.restart": "Sau khi lưu, hãy khởi động lại Cherry Studio để áp dụng không gian cho trình chỉnh sửa và dịch vụ cục bộ. Kiểm tra sử dụng kết nối đã lưu.",
   "settings.space.saveError": "Không thể lưu. Hãy kiểm tra URL và thử lại.",
+  "settings.space.setupPrompt": "Dùng hướng dẫn này để thiết lập Cherry-Studio-Memories làm hệ thống ngữ cảnh của tôi: {{url}}",
   "settings.space.title": "Không gian",
   "settings.subscription.activated": "{{plan}} đã được kích hoạt",
   "settings.subscription.card_label": "Gói đăng ký",

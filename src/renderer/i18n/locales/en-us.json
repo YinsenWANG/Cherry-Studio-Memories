@@ -5975,6 +5975,7 @@
   "settings.space.remote": "Remote",
   "settings.space.restart": "After saving, restart Cherry Studio to apply the space to the editor and local sidecar. Test uses the saved connection.",
   "settings.space.saveError": "Could not save. Check the URL and try again.",
+  "settings.space.setupPrompt": "Use this guide to help me set up Cherry-Studio-Memories as my context system: {{url}}",
   "settings.space.title": "Space",
   "settings.subscription.activated": "{{plan}} is active",
   "settings.subscription.card_label": "Subscription",

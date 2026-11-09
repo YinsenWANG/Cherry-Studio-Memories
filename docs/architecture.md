@@ -1,5 +1,7 @@
 # Cherry-Studio-Memories architecture
 
+> This page describes the earlier SiYuan implementation. See [npm Space architecture](architecture-npm-backend.md) for the current implementation.
+
 A Space is one SiYuan workspace. The community default is a local kernel and local workspace; a remote Space is an independently deployed SiYuan service selected by URL and token. A signed-in personal user or enterprise employee can configure the same remote endpoint on multiple devices. Cherry does not provision that backend, tie it to account login, implement a synchronization engine, or guarantee multi-member permissions.
 
 ```text

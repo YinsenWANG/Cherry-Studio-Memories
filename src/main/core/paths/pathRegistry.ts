@@ -103,11 +103,12 @@ export function buildPathRegistry() {
 
     // -- D. feature.* — grouped by feature, physical location is irrelevant --
     'feature.space.data': path.join(appUserDataData, 'Space'),
+    'feature.space.endpoint_file': path.join(appUserDataData, 'Space', 'server-endpoint.json'),
     'feature.space.workspace': path.join(appUserDataData, 'Space', 'workspace'),
     'feature.space.workspace_conf_file': path.join(appUserDataData, 'Space', 'workspace', 'conf', 'conf.json'),
     'feature.space.launcher_file': app.isPackaged
-      ? path.join(appExtraResources, 'memories', 'scripts', 'memories', 'start.mjs')
-      : path.join(app.getAppPath(), 'scripts', 'memories', 'start.mjs'),
+      ? path.join(appExtraResources, 'memories', 'src', 'cli.mjs')
+      : path.join(app.getAppPath(), 'packages', 'cherry-memories-server', 'src', 'cli.mjs'),
     'feature.space.locales': app.isPackaged
       ? path.join(appExtraResources, 'memories', 'locales')
       : path.join(app.getAppPath(), 'src', 'main', 'i18n', 'locales'),

@@ -5975,6 +5975,7 @@
   "settings.space.remote": "Uzak",
   "settings.space.restart": "Kaydettikten sonra alanı düzenleyiciye ve yerel servise uygulamak için Cherry Studio’yu yeniden başlatın. Test, kaydedilmiş bağlantıyı kullanır.",
   "settings.space.saveError": "Kaydedilemedi. URL’yi kontrol edip tekrar deneyin.",
+  "settings.space.setupPrompt": "Cherry-Studio-Memories uygulamasını bağlam sistemim olarak kurmak için bu kılavuzu kullan: {{url}}",
   "settings.space.title": "Alan",
   "settings.subscription.activated": "{{plan}} etkin",
   "settings.subscription.card_label": "Abonelik",

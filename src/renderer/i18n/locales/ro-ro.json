@@ -5975,6 +5975,7 @@
   "settings.space.remote": "La distanță",
   "settings.space.restart": "După salvare, repornește Cherry Studio pentru a aplica spațiul editorului și serviciului local. Testul folosește conexiunea salvată.",
   "settings.space.saveError": "Nu s-a putut salva. Verifică adresa URL și încearcă din nou.",
+  "settings.space.setupPrompt": "Folosește acest ghid pentru a configura Cherry-Studio-Memories ca sistemul meu de context: {{url}}",
   "settings.space.title": "Spațiu",
   "settings.subscription.activated": "{{plan}} este activ",
   "settings.subscription.card_label": "Abonament",

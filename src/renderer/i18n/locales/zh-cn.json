@@ -5975,6 +5975,7 @@
   "settings.space.remote": "远程",
   "settings.space.restart": "保存后请重启 Cherry Studio，使编辑器和本地服务切换到当前空间。连接测试使用已保存的配置。",
   "settings.space.saveError": "保存失败，请检查 URL 后重试。",
+  "settings.space.setupPrompt": "使用这个指南帮我设置 Cherry-Studio-Memories 作为我的上下文系统：{{url}}",
   "settings.space.title": "空间",
   "settings.subscription.activated": "{{plan}} 已生效",
   "settings.subscription.card_label": "订阅",

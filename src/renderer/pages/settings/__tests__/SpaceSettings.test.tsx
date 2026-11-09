@@ -61,16 +61,19 @@ describe('Space settings', () => {
 
     await user.click(screen.getByRole('combobox', { name: 'Space backend' }))
     await user.click(screen.getByRole('option', { name: 'Remote' }))
-    expect(screen.getByLabelText('Siyuan Note Token')).toHaveValue('')
+    expect(screen.getByLabelText('Authorization Header')).toHaveValue('')
     await user.type(screen.getByLabelText('URL'), 'https://space.example')
     await user.click(screen.getByRole('button', { name: 'Save' }))
     expect(update).not.toHaveBeenCalled()
 
-    await user.type(screen.getByLabelText('Siyuan Note Token'), 'remote-secret')
+    await user.type(screen.getByLabelText('Authorization Header'), 'remote-secret')
     await user.click(screen.getByRole('button', { name: 'Save' }))
     await waitFor(() =>
       expect(update).toHaveBeenCalledWith({
-        body: { baseUrl: 'https://space.example/mcp', headers: { Authorization: 'Bearer remote-secret' } }
+        body: {
+          baseUrl: 'https://space.example/mcp',
+          headers: { Authorization: 'Bearer remote-secret', 'X-Cherry-Space-Mode': 'remote' }
+        }
       })
     )
   })

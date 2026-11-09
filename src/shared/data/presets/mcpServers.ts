@@ -34,10 +34,10 @@ export const PRESET_MCP_SERVERS = freezePresets([
     reference: 'https://github.com/YinsenWANG/Cherry-Studio-Memories/blob/main/docs/setup.md',
     type: 'streamableHttp',
     baseUrl: 'http://127.0.0.1:16807/mcp',
-    headers: { Authorization: '' },
+    headers: { Authorization: '', 'X-Cherry-Space-Mode': 'local' },
     isActive: false,
     shouldConfig: true,
-    provider: 'SiYuan',
+    provider: 'Cherry Studio',
     installSource: 'builtin',
     isTrusted: false
   },

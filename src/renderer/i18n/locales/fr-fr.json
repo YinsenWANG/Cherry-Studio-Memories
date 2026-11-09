@@ -5975,6 +5975,7 @@
   "settings.space.remote": "Distant",
   "settings.space.restart": "Après l’enregistrement, redémarrez Cherry Studio pour appliquer l’espace à l’éditeur et au service local. Le test utilise la connexion enregistrée.",
   "settings.space.saveError": "Enregistrement impossible. Vérifiez l’URL et réessayez.",
+  "settings.space.setupPrompt": "Utilise ce guide pour configurer Cherry-Studio-Memories comme mon système de contexte : {{url}}",
   "settings.space.title": "Espace",
   "settings.subscription.activated": "{{plan}} est actif",
   "settings.subscription.card_label": "Abonnement",

@@ -30,19 +30,47 @@ export function SpaceSettings() {
   const [mode, setMode] = useState<'local' | 'remote'>('local')
   const [url, setUrl] = useState('')
   const [token, setToken] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [currentSpace, setCurrentSpace] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [dirty, setDirty] = useState(false)
 
   useEffect(() => {
     if (!server) return
-    const isRemote = !!server.baseUrl && server.baseUrl !== localUrl
+    const savedMode = Object.entries(server.headers ?? {}).find(
+      ([key]) => key.toLowerCase() === 'x-cherry-space-mode'
+    )?.[1]
+    const isRemote = savedMode === 'remote' || (!savedMode && !!server.baseUrl && server.baseUrl !== localUrl)
     setMode(isRemote ? 'remote' : 'local')
     setUrl(isRemote ? server.baseUrl!.replace(/\/mcp\/?$/, '') : '')
     const authorization = Object.entries(server.headers ?? {}).find(
       ([key]) => key.toLowerCase() === 'authorization'
     )?.[1]
     setToken(isRemote ? (authorization?.replace(/^Bearer\s+/i, '') ?? '') : '')
+  }, [server])
+
+  useEffect(() => {
+    if (!server?.baseUrl) return
+    const authorization = Object.entries(server.headers ?? {}).find(
+      ([key]) => key.toLowerCase() === 'authorization'
+    )?.[1]
+    if (!authorization) return
+    let active = true
+    fetch(`${server.baseUrl.replace(/\/mcp\/?$/, '')}/api/spaces/current`, {
+      headers: { Authorization: authorization }
+    })
+      .then(async (response) => (response.ok ? response.json() : undefined))
+      .then((space) => {
+        if (active) setCurrentSpace(space?.name ?? '')
+      })
+      .catch(() => {
+        if (active) setCurrentSpace('')
+      })
+    return () => {
+      active = false
+    }
   }, [server])
 
   const save = async () => {
@@ -72,9 +100,13 @@ export function SpaceSettings() {
       const authorization =
         mode === 'remote' ? `Bearer ${token.trim()}` : server.baseUrl === localUrl ? (previousAuthorization ?? '') : ''
       const headers = Object.fromEntries(
-        Object.entries(server.headers ?? {}).filter(([key]) => key.toLowerCase() !== 'authorization')
+        Object.entries(server.headers ?? {}).filter(
+          ([key]) => !['authorization', 'x-cherry-space-mode'].includes(key.toLowerCase())
+        )
       )
-      await updateMcpServer({ body: { baseUrl, headers: { ...headers, Authorization: authorization } } })
+      await updateMcpServer({
+        body: { baseUrl, headers: { ...headers, Authorization: authorization, 'X-Cherry-Space-Mode': mode } }
+      })
       setDirty(false)
       if (server.isActive) {
         try {
@@ -83,6 +115,79 @@ export function SpaceSettings() {
           setError(t('settings.mcp.runtimeStatus.error'))
         }
       }
+    } catch {
+      setError(t('settings.space.saveError'))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const signIn = async () => {
+    if (!server) return
+    setBusy(true)
+    setError('')
+    try {
+      const parsed = new URL(url)
+      if (
+        !['http:', 'https:'].includes(parsed.protocol) ||
+        parsed.username ||
+        parsed.password ||
+        parsed.search ||
+        parsed.hash
+      )
+        throw new Error('Invalid URL')
+      const root = parsed
+        .toString()
+        .replace(/\/+$/, '')
+        .replace(/\/mcp$/, '')
+      const response = await fetch(`${root}/api/session/sign-in`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+      if (!response.ok) throw new Error('Sign in failed')
+      const result = (await response.json()) as { token: string }
+      const headers = Object.fromEntries(
+        Object.entries(server.headers ?? {}).filter(
+          ([key]) => !['authorization', 'x-cherry-space-mode'].includes(key.toLowerCase())
+        )
+      )
+      await updateMcpServer({
+        body: {
+          baseUrl: `${root}/mcp`,
+          headers: { ...headers, Authorization: `Bearer ${result.token}`, 'X-Cherry-Space-Mode': 'remote' }
+        }
+      })
+      setToken(result.token)
+      setPassword('')
+      setDirty(false)
+      if (server.isActive) await ipcApi.request('mcp.server.restart', { serverId: server.id })
+    } catch {
+      setError(t('settings.provider.cherry_cloud.sign_in_failed'))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const signOut = async () => {
+    if (!server?.baseUrl) return
+    setBusy(true)
+    setError('')
+    try {
+      const authorization = Object.entries(server.headers ?? {}).find(
+        ([key]) => key.toLowerCase() === 'authorization'
+      )?.[1]
+      const response = await fetch(`${server.baseUrl.replace(/\/mcp\/?$/, '')}/api/session/sign-out`, {
+        method: 'POST',
+        headers: { Authorization: authorization ?? '' }
+      })
+      if (!response.ok) throw new Error('Sign out failed')
+      const headers = Object.fromEntries(
+        Object.entries(server.headers ?? {}).filter(([key]) => key.toLowerCase() !== 'authorization')
+      )
+      await updateMcpServer({ body: { headers: { ...headers, Authorization: '' } } })
+      setToken('')
+      setCurrentSpace('')
     } catch {
       setError(t('settings.space.saveError'))
     } finally {
@@ -145,7 +250,7 @@ export function SpaceSettings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="space-token">{t('settings.data.siyuan.token.label')}</label>
+                  <label htmlFor="space-token">{t('apiGateway.authHeader.title')}</label>
                   <Input
                     id="space-token"
                     type="password"
@@ -155,6 +260,35 @@ export function SpaceSettings() {
                       setDirty(true)
                     }}
                   />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="space-email">{t('settings.provider.vertex_ai.service_account.client_email')}</label>
+                  <Input
+                    id="space-email"
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="space-password">{t('settings.provider.basic_auth.password.label')}</label>
+                  <Input
+                    id="space-password"
+                    type="password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    disabled={busy || !url || !email || !password}
+                    onClick={() => void signIn()}>
+                    {t('settings.subscription.sign_in')}
+                  </Button>
+                  <Button variant="outline" disabled={busy || !token} onClick={() => void signOut()}>
+                    {t('settings.provider.cherry_cloud.logout')}
+                  </Button>
                 </div>
               </>
             )}
@@ -169,6 +303,11 @@ export function SpaceSettings() {
             <SettingDescription>
               {t('settings.voice.status.label')}: {t(statusKeys[status.state])}
             </SettingDescription>
+            {currentSpace && (
+              <SettingDescription>
+                {t('settings.space.title')}: {currentSpace}
+              </SettingDescription>
+            )}
             {error && (
               <p role="alert" className="text-error">
                 {error}

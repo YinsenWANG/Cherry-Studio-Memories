@@ -1,5 +1,7 @@
 # ChatGPT Space comparison and product boundary
 
+> This comparison records the earlier SiYuan version. See [npm Space architecture](architecture-npm-backend.md) for the current implementation and its limits.
+
 This document condenses the supplied research note `/Users/cherryai001/HermesRuntime/scratch/cherry-space-delta.md` (2026-11-09). It describes the product comparison, not a claim of feature parity. The [OpenAI sharing and data help page](https://help.openai.com/en/articles/20001544-chatgpt-space-sharing-data-and-controls) was checked on 2026-11-09: Space replaces Library for accounts with access while Projects remain separate; pages are editable and can be organized within pages; sharing supports view or edit access, subject to managed-workspace controls. Sharing a page does not by itself share private chats or personal ChatGPT Memory, but personal information written onto the page becomes visible to its readers. Uploaded files follow the page's permissions, while linked external files retain their own permissions.
 
 OpenAI's [Space feature page](https://chatgpt.com/features/space/) describes collaboration with agents and currently advertises pages that can stay updated from connected tools. The supplied note said Keep Updated was unavailable **at launch**; that is a dated observation, not a statement that the capability remains unavailable.
