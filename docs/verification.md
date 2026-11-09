@@ -69,3 +69,5 @@ A built Electron app was launched with `CS_DEV_PROFILE_ROOT=/tmp/cherry-memories
 - The native Skills index and example SKILL.md exist, but Notion's per-surface enabled list, full skill package migration, conflict prevention and automatic reimport exclusions are not reproduced.
 - The sidecar is a source-checkout process requiring Node and SiYuan. Binary detection and a download link are provided; there is no bundled installer or automatic download. Linux/Windows startup and GUI were not tested. Remote access requires a separate secure deployment.
 - Actual full Notion Memories schema/source-agent property remains unverified without an authorized Notion workspace. Installer size, backup/history purge, concurrent writers, and hardened multi-user isolation have not been tested.
+
+The commits are GPG-signed and verify locally. GitHub reported the pushed commit signature as `verified: false`, reason `no_user`; the signing key email is not currently associated with a verified GitHub account. GitHub account/key verification is outside this checkout.
