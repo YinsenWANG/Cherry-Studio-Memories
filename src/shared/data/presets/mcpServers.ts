@@ -30,6 +30,18 @@ const filesystemManualApprovalTools = ['write', 'edit', 'delete'] as const
 
 export const PRESET_MCP_SERVERS = freezePresets([
   {
+    name: BuiltinMcpServerNames.sharedMemories,
+    reference: 'https://github.com/YinsenWANG/Cherry-Studio-Memories/blob/main/docs/setup.md',
+    type: 'streamableHttp',
+    baseUrl: 'http://127.0.0.1:16807/mcp',
+    headers: { Authorization: '' },
+    isActive: false,
+    shouldConfig: true,
+    provider: 'SiYuan',
+    installSource: 'builtin',
+    isTrusted: false
+  },
+  {
     name: BuiltinMcpServerNames.flomo,
     reference: 'https://flomoapp.com',
     type: 'streamableHttp',

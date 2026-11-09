@@ -20,6 +20,13 @@ export interface MiniAppPreset {
 
 export const PRESETS_MINI_APPS: MiniAppPreset[] = [
   {
+    id: 'cherry-studio-memories',
+    name: 'Memories',
+    url: 'http://127.0.0.1:16808/',
+    bordered: true,
+    supportedRegions: ['CN', 'Global']
+  },
+  {
     id: 'radeon-cloud',
     name: 'AMD GPU Cloud',
     url: 'https://developer.amd.com.cn/radeon/',

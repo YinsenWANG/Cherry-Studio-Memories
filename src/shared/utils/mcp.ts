@@ -19,6 +19,7 @@ export const BuiltinMcpServerNames = {
   didiMcp: '@cherry/didi-mcp',
   browser: '@cherry/browser',
   nowledgeMem: '@cherry/nowledge-mem',
+  sharedMemories: '@cherry/shared-memories',
   hub: '@cherry/hub'
 } as const
 
