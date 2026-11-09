@@ -1,6 +1,8 @@
-appId: com.kangfenmao.CherryStudio
-productName: Cherry Studio
+appId: com.yinsen.CherryMemoriesEidos
+productName: Cherry Memories Eidos
 extraMetadata:
+  name: CherryMemoriesEidos
+  productName: Cherry Memories Eidos
   cherryEdition: global
 electronLanguages:
   - zh-CN
@@ -15,10 +17,6 @@ electronLanguages:
 directories:
   buildResources: build
 
-protocols:
-  - name: Cherry Studio
-    schemes:
-      - cherrystudio
 files:
   - "**/*"
   - "!**/node_modules/@anthropic-ai/claude-agent-sdk-*/**" # ClaudeCodeBinaryService downloads the native runtime on demand

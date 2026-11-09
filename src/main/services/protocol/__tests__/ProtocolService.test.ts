@@ -48,6 +48,7 @@ const {
   const openSettingsInMainWindowMock = vi.fn()
   const platformMock = {
     isLinux: false,
+    isMac: false,
     isPortable: false,
     isWin: false
   }
@@ -160,6 +161,7 @@ describe('ProtocolService', () => {
     profileMock.root = undefined
     protocolHandlers.clear()
     platformMock.isLinux = false
+    platformMock.isMac = false
     platformMock.isPortable = false
     platformMock.isWin = false
     service = new ProtocolService()
@@ -186,6 +188,16 @@ describe('ProtocolService', () => {
     await (service as any).onInit()
 
     expect(protocolHandlers.get('cherrystudio')).toEqual({ executable: undefined, args: undefined })
+  })
+
+  it('does not replace the existing Cherry protocol handler on macOS', async () => {
+    platformMock.isMac = true
+    const installedHandler = { executable: '/Applications/Cherry Studio.app', args: [] }
+    protocolHandlers.set('cherrystudio', installedHandler)
+
+    await (service as any).onInit()
+
+    expect(protocolHandlers.get('cherrystudio')).toBe(installedHandler)
   })
 
   it('registers the stable launcher for packaged Windows portable builds', async () => {

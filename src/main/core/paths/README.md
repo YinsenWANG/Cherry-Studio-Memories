@@ -31,7 +31,7 @@ application.getPath('invalid.key')
 
 | Namespace | Ownership | Examples |
 |-----------|-----------|----------|
-| `cherry.*` | Generic infra under `{cherryHome}` (`~/.cherrystudio` by default) | `cherry.home`, `cherry.bin` |
+| `cherry.*` | Generic infra under `{cherryHome}` (`~/.cherrystudio-eidos` in this prototype) | `cherry.home`, `cherry.bin` |
 | `sys.*` | OS-managed directories | `sys.home`, `sys.temp`, `sys.downloads` |
 | `app.*` | Electron app: install dir, userData, database, logs, temp root | `app.userdata`, `app.database.file` |
 | `feature.*` | Cherry-owned feature data (grouped by feature) | `feature.files.data`, `feature.mcp.oauth` |

@@ -1,0 +1,6 @@
+Eidos CLI 3.3.2 for macOS arm64, unmodified upstream release.
+Copyright and source: https://github.com/mayneyao/eidos/tree/e6f3387d1290280a36c3532e4e0dea1cb2e1853b
+Release: https://github.com/mayneyao/eidos/releases/tag/cli-v3.3.2
+License: GNU Affero General Public License version 3; see AGPL-3.0.txt.
+Upstream archive SHA-256: e1f148057e546247a46696261d778119a8991ee7e02e59938a3a67c5c27f269a
+Executable SHA-256: 6b126eaa090a31affadc96c15ff464f0ffaba9ca01cd3eaf2ae113a4a2a2c650

@@ -18,7 +18,7 @@ import path from 'node:path'
 
 import { app } from 'electron'
 
-export const CHERRY_HOME_DIRNAME = '.cherrystudio'
+export const CHERRY_HOME_DIRNAME = '.cherrystudio-eidos'
 
 function resolveDevProfileRoot(): string | undefined {
   if (app.isPackaged) return undefined
@@ -39,7 +39,7 @@ export const CHERRY_HOME = DEV_PROFILE_ROOT
   : path.join(os.homedir(), CHERRY_HOME_DIRNAME)
 export const BOOT_CONFIG_PATH = path.join(CHERRY_HOME, 'boot-config.json')
 
-const DEFAULT_DEV_USER_DATA_SUFFIX = 'Dev'
+const DEFAULT_DEV_USER_DATA_SUFFIX = 'Eidos'
 
 // The suffix is concatenated into directory names, so it must stay a single
 // path component: separators, drive colons, and control/Windows-forbidden
@@ -51,12 +51,12 @@ const DEFAULT_DEV_USER_DATA_SUFFIX = 'Dev'
 const FORBIDDEN_DEV_USER_DATA_SUFFIX = /[\\/:*?"<>|]|\p{Cc}/u
 
 /**
- * Dev-instance directory suffix (`CherryStudio` → `CherryStudioDev`),
+ * Dev-instance directory suffix (`CherryStudio` → `CherryStudioEidos`),
  * overridable via CS_DEV_USER_DATA_SUFFIX.
  *
  * Blank values fall back to the default; a value that is not a single path
  * component aborts startup instead, because falling back would silently merge
- * a profile meant to be isolated into the shared `Dev` one. Throwing is also
+ * a profile meant to be isolated into the shared `Eidos` one. Throwing is also
  * the only way to report this: @logger is unavailable here, since
  * LoggerService consumes LOGS_DIR from this file.
  */
@@ -73,7 +73,7 @@ function resolveDevUserDataSuffix(): string {
 }
 
 /**
- * Dev-instance userData directory (`…/CherryStudio` → `…/CherryStudioDev`).
+ * Dev-instance userData directory (`…/CherryStudio` → `…/CherryStudioEidos`).
  * Applied by `core/preboot/userDataLocation.ts` and — on Windows and Linux,
  * where logs live inside userData — by the logs diversion below, so both
  * derive from one definition.

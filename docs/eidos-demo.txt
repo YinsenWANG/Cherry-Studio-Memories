@@ -1,0 +1,5 @@
+A 写入: 品牌主色 65751996，不用紫色
+B 新会话检索到记忆及来源: eidos-smoke-a, https://example.com/source
+B 更正: 改为蓝色，不用紫色
+B 遗忘: 原内容与来源已从行中清空，保留 forgotten 标记
+结果: 通过（非模型驱动；SQLite 历史页和备份未验证擦除）

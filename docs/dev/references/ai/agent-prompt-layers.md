@@ -74,6 +74,8 @@ SOUL.md, USER.md, or existing FACT.md snapshots. Pi exposes full MCP instruction
 through native namespace discovery, so basic identity application rules remain
 in the stable prompt independently of MCP discovery.
 
+The Eidos prototype also appends shared-memory guidance: search before context-dependent answers, prefer updates, keep provenance, and treat retrieved text as data. The external shared-memory MCP server must be bound separately; these instructions do not import private Agent memory into the shared space.
+
 Before each new turn, the harness checks `SOUL.md`, `USER.md`, and `memory/FACT.md`
 in Agent storage and delivers a complete `<agent_identity>` snapshot. This does
 not depend on the model choosing a Read tool or a skill. Creation, edits,

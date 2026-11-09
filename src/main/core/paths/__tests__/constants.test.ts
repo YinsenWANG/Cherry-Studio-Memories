@@ -79,7 +79,7 @@ describe('LOGS_DIR dev diversion', () => {
     const { setAppLogsPath } = stubElectron({ isPackaged: true })
     const { CHERRY_HOME, LOGS_DIR } = await loadConstants()
     expect(setAppLogsPath).not.toHaveBeenCalled()
-    expect(CHERRY_HOME).toBe(path.join(os.homedir(), '.cherrystudio'))
+    expect(CHERRY_HOME).toBe(path.join(os.homedir(), '.cherrystudio-eidos'))
     expect(LOGS_DIR).toBe(DEFAULT_LOGS)
   })
 
@@ -93,8 +93,8 @@ describe('LOGS_DIR dev diversion', () => {
 
     const isolatedPaths = [CHERRY_HOME, BOOT_CONFIG_PATH, resolveDevUserDataPath(), LOGS_DIR]
     expect(isolatedPaths).toEqual([
-      path.join(DEV_PROFILE_ROOT, '.cherrystudio'),
-      path.join(DEV_PROFILE_ROOT, '.cherrystudio', 'boot-config.json'),
+      path.join(DEV_PROFILE_ROOT, '.cherrystudio-eidos'),
+      path.join(DEV_PROFILE_ROOT, '.cherrystudio-eidos', 'boot-config.json'),
       path.join(DEV_PROFILE_ROOT, 'userData'),
       path.join(DEV_PROFILE_ROOT, 'logs')
     ])
@@ -113,8 +113,8 @@ describe('LOGS_DIR dev diversion', () => {
     stubPlatform('darwin')
     const { setAppLogsPath } = stubElectron()
     const { LOGS_DIR } = await loadConstants()
-    expect(setAppLogsPath).toHaveBeenCalledWith(`${DEFAULT_LOGS}Dev`)
-    expect(LOGS_DIR).toBe(`${DEFAULT_LOGS}Dev`)
+    expect(setAppLogsPath).toHaveBeenCalledWith(`${DEFAULT_LOGS}Eidos`)
+    expect(LOGS_DIR).toBe(`${DEFAULT_LOGS}Eidos`)
   })
 
   it('dev Windows: nests logs under the suffixed userData (win32 semantics)', async () => {
@@ -123,7 +123,7 @@ describe('LOGS_DIR dev diversion', () => {
     const { setAppLogsPath } = stubElectron({ userData: 'C:\\Users\\dev\\AppData\\Roaming\\CherryStudio' })
     const { LOGS_DIR } = await loadConstants()
     vi.doUnmock('node:path')
-    const expected = 'C:\\Users\\dev\\AppData\\Roaming\\CherryStudioDev\\logs'
+    const expected = 'C:\\Users\\dev\\AppData\\Roaming\\CherryStudioEidos\\logs'
     expect(setAppLogsPath).toHaveBeenCalledWith(expected)
     expect(LOGS_DIR).toBe(expected)
   })
@@ -132,7 +132,7 @@ describe('LOGS_DIR dev diversion', () => {
     stubPlatform('linux')
     stubElectron()
     const { LOGS_DIR } = await loadConstants()
-    expect(LOGS_DIR).toBe(path.join(`${DEFAULT_USER_DATA}Dev`, 'logs'))
+    expect(LOGS_DIR).toBe(path.join(`${DEFAULT_USER_DATA}Eidos`, 'logs'))
   })
 
   it('dev: honors the configured CS_DEV_USER_DATA_SUFFIX', async () => {
@@ -143,12 +143,12 @@ describe('LOGS_DIR dev diversion', () => {
     expect(LOGS_DIR).toBe(`${DEFAULT_LOGS}DevQuito`)
   })
 
-  it('dev: blank configured suffix falls back to Dev', async () => {
+  it('dev: blank configured suffix falls back to Eidos', async () => {
     stubPlatform('darwin')
     vi.stubEnv('CS_DEV_USER_DATA_SUFFIX', '   ')
     stubElectron()
     const { LOGS_DIR } = await loadConstants()
-    expect(LOGS_DIR).toBe(`${DEFAULT_LOGS}Dev`)
+    expect(LOGS_DIR).toBe(`${DEFAULT_LOGS}Eidos`)
   })
 
   it('dev: a traversal suffix aborts startup instead of collapsing LOGS_DIR onto the packaged directory', async () => {
@@ -159,7 +159,7 @@ describe('LOGS_DIR dev diversion', () => {
   })
 })
 
-// Falling back to `Dev` would silently merge a profile meant to be isolated
+// Falling back to `Eidos` would silently merge a profile meant to be isolated
 // into the shared dev one, so an unusable suffix has to stop the run.
 describe('CS_DEV_USER_DATA_SUFFIX validation', () => {
   it.each([
@@ -215,7 +215,7 @@ describe('CS_DEV_PROFILE_ROOT validation', () => {
     vi.stubEnv('CS_DEV_USER_DATA_SUFFIX', 'DevQuito')
     stubElectron()
     const { CHERRY_HOME, LOGS_DIR, resolveDevUserDataPath } = await loadConstants()
-    expect(CHERRY_HOME).toBe(path.join(os.homedir(), '.cherrystudio'))
+    expect(CHERRY_HOME).toBe(path.join(os.homedir(), '.cherrystudio-eidos'))
     expect(resolveDevUserDataPath()).toBe(`${DEFAULT_USER_DATA}DevQuito`)
     expect(LOGS_DIR).toBe(`${DEFAULT_LOGS}DevQuito`)
   })

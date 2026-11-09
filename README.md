@@ -1,29 +1,25 @@
 # Cherry-Studio-Memories
 
-An experimental public fork of Cherry Studio that connects agents to a shared, user-editable SiYuan workspace. SiYuan is an external sidecar: its binary is not included in the Electron installer. This prototype adds a Memories mini app, an MCP catalog preset, an idempotent workspace initializer, and a local setup page.
+This branch is the **Eidos prototype** of Cherry-Studio-Memories. It bundles the macOS arm64 [Eidos CLI 3.3.2](https://github.com/mayneyao/eidos/releases/tag/cli-v3.3.2) and starts its local table editor alongside Cherry. Markdown pages, the Eidos table and the MCP adapter form one explicitly written shared space; private agent memories are not imported. The Eidos CLI is from [mayneyao/eidos](https://github.com/mayneyao/eidos) and is distributed under [AGPL-3.0](https://github.com/mayneyao/eidos/blob/e6f3387d1290280a36c3532e4e0dea1cb2e1853b/LICENSE).
 
 ```text
-Cherry / other local agents ── MCP ──> SiYuan kernel ──> Memories + Guide + Skills
-Cherry Memories mini app ──> local setup page ──> SiYuan web editor
+Cherry / other local agents ── MCP ──> Eidos Runtime ──> space.eidos
+Cherry Memories mini app ──> local pages + Eidos table editor
 ```
 
 ## Run the prototype
 
-1. Install [SiYuan 3.8.9](https://github.com/siyuan-note/siyuan/releases/tag/v3.8.9); on macOS place `SiYuan.app` in `/Applications`, or set `SIYUAN_KERNEL` to its kernel executable. Other platforms must provide a kernel **and its matching GUI resources**.
-2. Use Node >=24.12 and the pnpm version specified by this repository. From the repository root run `pnpm install` and `pnpm build`. To launch the built Cherry app in another terminal, run `pnpm rebuild:electron && pnpm exec electron-vite preview`.
-3. Run `node scripts/memories/start.mjs`. It detects an installed kernel, creates a separate workspace under `~/.cherry-studio-memories`, starts it on `127.0.0.1:16807`, and serves the setup page on `127.0.0.1:16808`. If detection fails it links to the upstream download. The process runs until interrupted. The local web editor asks for the access code in `~/.cherry-studio-memories/access-code`. Do not expose either port to the public internet.
-4. Open the **Memories** mini app in Cherry (or visit `http://127.0.0.1:16808/`). Click **初始化共享记忆**, then **打开文档**. The button creates the notebook, database and guide; it preserves existing documents on repeat runs.
-5. In Cherry's MCP catalog add **@cherry/shared-memories**, configure header `Authorization: Bearer <SiYuan API token>` using the token shown in SiYuan settings, and enable it. In each agent's editor bind that MCP server. This step is currently manual; an installed preset does not auto-bind agents. Apply [custom instructions](docs/custom-instructions.md) so agents know when and how to use it.
-
-If SiYuan is already running with a separate workspace, use `SIYUAN_WORKSPACE=/path/to/workspace node scripts/memories/server.mjs` instead of the launcher. The local server reads the API token from that workspace's configuration; `SIYUAN_TOKEN` and `SIYUAN_URL` can be set explicitly. The server is local-only and the initializer requires a same-origin POST. Avoid passing secrets in shell history.
+1. On macOS arm64, use Node >=24.12 and the pinned pnpm version. Run `pnpm install && pnpm dev` in this checkout.
+2. In Cherry open **Launchpad → Mini Apps → Memories**. The space and its Eidos table start automatically; create a page or edit the table. Data is under `<Cherry userData>/Data/SharedMemories`. This branch uses `.cherrystudio-eidos` and an Eidos-specific app identity and development profile so it can coexist with the other version.
+3. To let Cherry's agent use the shared tools, add and enable **@cherry/shared-memories** in the MCP catalog and bind it to the agent. External local clients can connect to `http://127.0.0.1:16818/mcp` while Cherry is running.
 
 ## Connect other agents
 
-The local setup page has a copy button for `使用这个指南帮我设置 Cherry-Studio-Memories 作为我的上下文系统：http://127.0.0.1:16808/setup`. This URL is accessible only from the same machine. A remote agent needs a separately secured HTTPS deployment and a URL reachable from its own environment; the public [setup guide](docs/setup.md) is also available. Configure the same workspace's MCP URL and authorization header in the other client, then add [custom instructions](docs/custom-instructions.md). Never paste API tokens into chat or memories.
+The space has a copy button for `使用这个指南帮我设置 Cherry-Studio-Memories 作为我的上下文系统：http://127.0.0.1:16818/setup`. This address works only for agents on the same machine. The MCP and Eidos endpoints listen on loopback without user-level authentication: other local processes can read and write the space. Do not expose them to a network.
 
 ## Current limits
 
-This is not yet an out-of-box shared brain: the sidecar and Node runtime are external, the user manually installs/configures the MCP preset and binds each agent, and agent adherence to the guide is not enforced. SiYuan MCP has administrator access across its workspace. A document index is not Notion's enabled-skills mechanism; search is not equivalent to Notion's semantic memory search. Deleting a row does not prove deletion from backups, history, other clients, or model provider logs. The [verification report](docs/verification.md) distinguishes actual tests from missing ones.
+This is a macOS arm64 prototype, not a production memory system. Agents must be manually bound to the MCP server, search is literal, and the Skills page is an index rather than an enabled-skills registry. Forgetting redacts the current row but does not prove erasure from SQLite history or backups. See [Eidos implementation and verification](docs/eidos-version.md) for evidence and limitations. The earlier [SiYuan verification](docs/verification.md) describes a separate version.
 
 Research and engineering details: [Notion mechanism](docs/notion-mechanism.md), [backend selection](docs/backend-selection.md), [architecture](docs/architecture.md). Original upstream README follows.
 

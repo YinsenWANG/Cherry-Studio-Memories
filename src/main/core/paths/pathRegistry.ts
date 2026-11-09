@@ -102,6 +102,12 @@ export function buildPathRegistry() {
       : path.join(__dirname, '../../migrations/sqlite-drizzle'),
 
     // -- D. feature.* — grouped by feature, physical location is irrelevant --
+    'feature.memories.file': path.join(appUserDataData, 'SharedMemories', 'space.eidos'),
+    'feature.memories.pages': path.join(appUserDataData, 'SharedMemories', 'pages'),
+    'feature.memories.binary_file': app.isPackaged
+      ? path.join(appExtraResources, 'app.asar.unpacked', 'resources', 'eidos', 'eidos-darwin-arm64')
+      : path.join(appRootResources, 'eidos', 'eidos-darwin-arm64'),
+
     'feature.external_app.native_file': path.join(
       appRootResources,
       'binaries',
@@ -455,6 +461,9 @@ const NO_ENSURE = [
   'app.root.resources.scripts',
   'app.root.resources.binaries',
   'feature.selection.native_panel_file',
+  'feature.memories.binary_file',
+  'feature.memories.file',
+  'feature.memories.pages',
   'app.utility_process',
   'app.session.webview',
   'feature.backup.restore.session',

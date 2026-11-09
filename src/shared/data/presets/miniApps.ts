@@ -22,7 +22,7 @@ export const PRESETS_MINI_APPS: MiniAppPreset[] = [
   {
     id: 'cherry-studio-memories',
     name: 'Memories',
-    url: 'http://127.0.0.1:16808/',
+    url: 'http://127.0.0.1:16818/',
     bordered: true,
     supportedRegions: ['CN', 'Global']
   },

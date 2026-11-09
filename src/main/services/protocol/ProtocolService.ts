@@ -11,7 +11,7 @@ import { mcpServerService } from '@data/services/McpServerService'
 import { loggerService } from '@logger'
 import { BaseService, Injectable, Phase, ServicePhase } from '@main/core/lifecycle'
 import { DEV_PROFILE_ROOT } from '@main/core/paths/constants'
-import { isLinux, isPortable, isWin } from '@main/core/platform'
+import { isLinux, isMac, isPortable, isWin } from '@main/core/platform'
 import { WindowType } from '@main/core/window/types'
 import { openSettingsInMainWindow } from '@main/services/mainWindowNavigation'
 import type { ProtocolMcpInstallRequest } from '@shared/data/types/mcpProtocolInstall'
@@ -143,7 +143,8 @@ export class ProtocolService extends BaseService {
   }
 
   private registerProtocolScheme() {
-    if (DEV_PROFILE_ROOT) return
+    // The macOS prototype must not replace an existing Cherry URL handler.
+    if (DEV_PROFILE_ROOT || isMac) return
 
     // In dev, Electron needs the app entry as an absolute path; launchers often
     // pass "." as argv[1], which becomes invalid when the OS invokes the

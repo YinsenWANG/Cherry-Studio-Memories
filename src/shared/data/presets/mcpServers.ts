@@ -31,13 +31,12 @@ const filesystemManualApprovalTools = ['write', 'edit', 'delete'] as const
 export const PRESET_MCP_SERVERS = freezePresets([
   {
     name: BuiltinMcpServerNames.sharedMemories,
-    reference: 'https://github.com/YinsenWANG/Cherry-Studio-Memories/blob/main/docs/setup.md',
+    reference: 'http://127.0.0.1:16818/setup',
     type: 'streamableHttp',
-    baseUrl: 'http://127.0.0.1:16807/mcp',
-    headers: { Authorization: '' },
+    baseUrl: 'http://127.0.0.1:16818/mcp',
     isActive: false,
-    shouldConfig: true,
-    provider: 'SiYuan',
+    shouldConfig: false,
+    provider: 'Eidos',
     installSource: 'builtin',
     isTrusted: false
   },

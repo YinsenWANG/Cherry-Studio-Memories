@@ -37,6 +37,7 @@ import { ApiGatewayService } from '@main/features/apiGateway/ApiGatewayService'
 import { BrowserSessionService } from '@main/features/browser'
 import { FileProcessingService, TesseractRuntimeService } from '@main/features/fileProcessing'
 import { KnowledgeService, KnowledgeVectorStoreService } from '@main/features/knowledge'
+import { EidosMemoriesService } from '@main/features/memories/EidosMemoriesService'
 import { MiniAppRuntimeService } from '@main/features/miniApp/runtime/MiniAppRuntimeService'
 import { IpcApiService } from '@main/ipc/IpcApiService'
 import { AnalyticsService } from '@main/services/AnalyticsService'
@@ -204,6 +205,7 @@ export const services = {
   OcrInferenceService,
   LocalModelService,
   KnowledgeService,
+  EidosMemoriesService,
   KnowledgeVectorStoreService,
   MiniAppRuntimeService,
   ApiGatewayService,
